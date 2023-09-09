@@ -1,35 +1,13 @@
-#import libraries
-import random, time
+import random, time #import user libraries 
 
-#create lists
-materials = ['brick', 'sand', 'glass']
-location = ["In a dense forest", "By the seashore", "In your mom's house"]
-lights = ["candles","torches","flashlights"]
-lightPrompt = ["Using","Illuminated by"]
-inhabitants = ["cockraches","crows","kings"]
+materials = ['brick','sand','glass']
+#create 3 more lists with one containing locations, another lightsources, and lastly one with inhabitants
+#EXTRA CREDIT 1: create another list with light source prompts
 
-trueFalse = True
-counter = 0
-
-#make while loop, use random.choice(x) to randomly select strings from lists
-while True:
-    #print("A house of",random.choice(materials))
-    #print("   ",random.choice(location))
-    #print("      ",random.choice(lights))
-    #print("         Inhabited by",random.choice(inhabitants))
-    for letter in "        INHABITED BY " + random.choice(inhabitants):
-            print(letter, end="", flush=True)
-            time.sleep(0.05)
-    print()
-    for letter in "     " + random.choice(location):
-            print(letter, end="", flush=True)
-            time.sleep(0.05)
-    print("\n")
-    time.sleep(1)
-
-
-#extra credit 1: use random.random() and an if statement to select between two light source phrases 50% of the time
-            #or you can figure out how to use random.choice again!
-
-
-#extra credit 2: learn how to use print statements to print letter by letter rather than an entire statement
+while True: #create an infinite while loop
+    print("A house of",random.choice(materials))#use random.choice to randomly print an item from your materials list: 
+    #repeat 3 other times with other lists
+    #EXTRA CREDIT 1: use lightsource prompts list before printing the lightsources list
+    #EXTRA CREDIT 2: Learn yourself from external resources how to print letter by letter (flush, as in the letters print directly next to eachther) rather than line by line
+    #create a new line to separate poems from eachother
+    time.sleep(1) #use sleep library to pause for one second
