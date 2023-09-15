@@ -16,4 +16,8 @@ n = 10
 for i in range(1, n + 1, 1):
     t.circle(r * i)
 
+
+
+for i in range(1, n + 1, 1):
+    t.circle(r * i)
 # how do we repeat this action but flipped?
