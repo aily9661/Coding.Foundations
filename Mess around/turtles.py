@@ -1,8 +1,5 @@
 import turtle
 
-
-TK_SILENCE_DEPRECATION=1
-
 t = turtle.Turtle()
 
 r = 10
