@@ -12,16 +12,16 @@ screen.title("Drawing Basic Shapes Using Functions")
 
 # Create a Turtle object
 t = turtle.Turtle() #instantiate your Turtle
-t.speed(0)  # Set the drawing speed (0) which is the "fastest"
+t.speed(1)  # Set the drawing speed (0) which is the "fastest"
 t.color("purple") #this will be the active color until/if it is changed
 t.turtlesize(0.5) #this will make it a little bigger
 
 
 def drawPolygon(t,x,y,numSides,sideLength, color="yellow"):
     rotationAngle = 360//numSides
-    t.penup()
-    t.goto(x-(sideLength/2),  y-(sideLength/2))
-    t.pendown()
+    #t.penup()
+    #t.goto(x-(sideLength/2),  y-(sideLength/2))
+    #t.pendown()
 
     for i in range(numSides):
         t.forward(sideLength)
