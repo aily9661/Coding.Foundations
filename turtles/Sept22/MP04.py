@@ -22,6 +22,7 @@ def drawPolygon(t,x,y,numSides,sideLength, color="yellow"):
     t.penup()
     t.goto(x-(sideLength/2),  y-(sideLength/2))
     t.pendown()
+    t.color(color)
 
     for i in range(numSides):
         t.forward(sideLength)

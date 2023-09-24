@@ -17,7 +17,7 @@ screen.title("Drawing Basic Shapes Using Functions")
 
 # Create a Turtle object
 t = turtle.Turtle() #instantiate your Turtle
-t.speed(3)  # Set the drawing speed (0) which is the "fastest"
+t.speed(0)  # Set the drawing speed (0) which is the "fastest"
 t.color("red") #this will be the active color until/if it is changed
 
 t.shape("turtle") #this will make our drawing pointer look like a turtle
