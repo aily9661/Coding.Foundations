@@ -227,11 +227,12 @@ def drawCat(t):
     #draw nose
     drawIsoTriangle(t,0,0,8,12,"white","pink")
     
+    
 ##PUT YOUR drawPolygon() FUNCTION HERE!!!
 
 ##HERE IS WHERE THE DRAWING WILL HAPPEN, WE WILL CALL THE FUNCTIONS
 ##DEFINED ABOVE IN VARIOUS WAYS
-
+drawSunSettingBehindMountains(t)
 
 #if you want to see your turtle
 #comment out the line below
@@ -245,92 +246,8 @@ t.hideturtle()
 #screen.tracer(0)
 
 #draw some shapes using our functions
-drawCat(t)
 
-for i in range(1):
-    #draw a circle
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    radius = random.randint(10,250)
-    #will draw a circle with both a stroke and fill color
-    drawACircle(t,x,y,radius,random.choice(myColors), random.choice(myColors))
 
-    #draw a square
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    length = random.randint(10,250)
-    drawASquare(t,x,y,length,random.choice(myColors))
-
-    #draw a rectangle
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    width = random.randint(10,100)
-    height = random.randint(100,250)
-    #draw rectangle with a stroke color but no fill color
-    drawARect(t,x,y,width,height,random.choice(myColors),"NONE")
-
-    #draw right pointing right triangle, isoMode=False, drawRight = True
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    base = random.randint(10,250)
-    height = random.randint(10,250)
-    drawRightTriangle(t,x,y,base,height,False,True,random.choice(myColors),"NONE")
-    #draw a "left" pointing right triangle, isoMode=False, drawRight = False
-    #use a fillColor
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    base = random.randint(10,250)
-    height = random.randint(10,250)
-    drawRightTriangle(t,x,y,base,height,False,False,random.choice(myColors),random.choice(myColors))
-
-    #draw isosceles triangle
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    base = random.randint(10,250)
-    height = random.randint(10,250)
-    drawIsoTriangle(t,x,y,base,height,random.choice(myColors),"NONE")
-    #draw an overlapping circles object
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    radius = random.randint(10,100)
-    forward_movement = random.randint(10,30)
-    angle_to_rotate = 10
-    #draw overlapping circles object with a rainbox spectrum
-    drawOverlappingCircles(t,x,y,radius,forward_movement,angle_to_rotate,True,"NONE")
-    
-    #draw circle bulls eye object
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    radius = random.randint(10,250)
-    #draw a circle bullseye object (concentric circles) with an initial radius of 10
-    drawCircleBullsEye(t,x,y,10,random.randint(15,50),random.choice(myColors),"NONE")
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    radius = random.randint(10,250)
-    drawCircleBullsEye(t,x,y,10,random.randint(15,50),random.choice(myColors),random.choice(myColors))
-
-    #draw two stoplights one at 3.0 times scale and at 0.5 times scale
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    drawStopLight(t,x,y,3.0)
-    x = random.randint(-300,300)
-    y = random.randint(-400,400)
-    drawStopLight(t,x,y,0.5)
-    
-    #experiment with uncommenting the line below
-    #along with the "screen.tracer(0)" call at the
-    #top of the for loop
-    
-    #screen.update()
-
-    #this will reset the screen and
-    #draw the sun setting behind the mountains scene
-    #we need to rehide the turtle and set its speed to
-    #fast again, this gets reset as well
-    screen.resetscreen()
-    t.hideturtle()
-    t.speed(0)
-    drawSunSettingBehindMountains(t)
 
 #This keeps the turtle screen active until it is clicked on
 #to exit

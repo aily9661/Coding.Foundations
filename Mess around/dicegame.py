@@ -11,9 +11,12 @@ userCom = input("Y/N ")
 
 #response based on user initial ready confirtmation
 if userCom == "N" or userCom == "n": print("Too bad!")
-if userCom == "Y" or userCom == "y": print("Sweet, let's get into it")
+elif userCom == "Y" or userCom == "y": print("Sweet, let's get into it")
+else: print("Well that's not a correct input... but let's play anyway")
 
+time.sleep(1)
 print("Here's the game: Guess whether the dice roll will be high or low. If you guess correctly you win!")
+time.sleep(1)
 
 #loop ends when user chooses to stop playing
 while keepPlaying == True:
@@ -33,14 +36,17 @@ while keepPlaying == True:
     elif diceRoll > 3 and userGuess == "L":
         print("Wrong! Dice roll was ", diceRoll)
         wrongGuesses += 1
+    time.sleep(1)
     print("Correct guesses: ",correctGuesses)
+    time.sleep(1)
     print("Wrong guesses: ", wrongGuesses)
     time.sleep(1)
     keepPlaying2 = input("Wanna play again? Y/N ")
     if keepPlaying2 == "N" or keepPlaying2 == "n": 
         print("Goodbye!")
         keepPlaying = False
-    if keepPlaying2 == "Y" or keepPlaying2 == "y": 
+    elif keepPlaying2 == "Y" or keepPlaying2 == "y": 
         print("Restarting game...")
         time.sleep(1)
+    else: print("Incorrect input! Try again."), time.sleep(1)
 
