@@ -1,4 +1,4 @@
-def play_tone(x, y):
+def play_tone(x, y, radius):
     # Map x and y coordinates to frequencies
     base_frequency = 220.0  # Adjust as needed
 
