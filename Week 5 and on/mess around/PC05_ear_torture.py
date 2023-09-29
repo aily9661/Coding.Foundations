@@ -44,13 +44,21 @@ def play_tone_based_on_coords(x, y):
     tone = generate_tone(freq, 1)
     sa.play_buffer(tone, 1, 2, 44100)
 
-def draw_circle(_):
+def draw_circle(_,oppX=False,midY=False):
     """Draw a circle at a random position and play a tone based on its coordinates."""
-    x = random.randint(int((-300+(_*5))), int((-250+(_*5))))
-    y = random.randint(int((200-(_*5))), int((250-(_*5))))
+    if oppX:
+        x = -1*(random.randint(int((-300+(_*5))), int((-250+(_*5)))))
+    else:
+        x = random.randint(int((-300+(_*5))), int((-250+(_*5))))
+    if midY:
+        y = 0
+    else:
+        y = random.randint(int((200-(_*5))), int((250-(_*5))))
     turtle.penup()
     turtle.goto(x, y)
     turtle.pendown()
+    turtle.colormode(255)
+    turtle.pencolor((_*3),0,0)
     turtle.circle(50)
     play_tone_based_on_coords(x, y)
 
@@ -59,11 +67,11 @@ turtle.speed(0)
 turtle.bgcolor("white")
 
 # Draw 10 circles at random positions
-for _ in range(100):
+for _ in range(0,150,3):
     draw_circle(_)
-    time.sleep(0.25)
-    draw_circle(_)
-    time.sleep(0.5)
+    draw_circle(_,oppX=True)
+    draw_circle(_,oppX=False,midY=True)
+    time.sleep(1)
     
 
 turtle.done()
