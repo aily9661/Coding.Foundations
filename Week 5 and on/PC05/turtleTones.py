@@ -214,27 +214,9 @@ def drawSunSettingBehindMountains(t):
     drawIsoTriangle(t,-250,-250,200,1000,"white","darkorchid")
     
 ##PUT YOUR drawPolygon() FUNCTION HERE!!!
-def drawPolygon(t,x,y,numSides,sideLength,strokeColor="yellow", fillColor="NONE"):
-    myVertextCoordinates = []
-    angle_to_rotate = 360//numSides
-    t.penup()
-    t.goto(x-(sideLength/2),y-(sideLength/2))
-    t.pendown()
-    for i in range(numSides):
-        t.forward(sideLength)
-        t.left(angle_to_rotate)
-        myVertextCoordinates.append(t.pos())
-
-    return myVertextCoordinates
-
-##Add your getNewNote() function HERE!!
 def getNewNote(baseFreq,nSemitones):
       return baseFreq*2**(nSemitones/12)
 
-baseFrequency = 440
-nSemitones = 3
-
-print(getNewNote(baseFrequency,nSemitones))
 ##Add the play_tone function here
 def play_tone(x, y,radius):
     # Map x and y coordinates to frequencies
@@ -265,6 +247,8 @@ def play_tone(x, y,radius):
     #lets just change the function and pass in the radius
     #as an argument and delete the radius assignment below
 
+    radius = math.sqrt(x ** 2 + y ** 2)
+
     #this will make the tone duration longer with a bigger radius
     duration = radius * 0.005  # Adjust the scale as needed, 0.005 is lowest you should go
 
@@ -288,7 +272,6 @@ def play_tone(x, y,radius):
     # Play the sine wave
     play_obj = sa.play_buffer((wave * 32767).astype(np.int16), 1, 2, sample_rate)
     play_obj.wait_done()
-
 ##HERE IS WHERE THE DRAWING WILL HAPPEN, WE WILL CALL THE FUNCTIONS
 ##DEFINED ABOVE IN VARIOUS WAYS
 
