@@ -217,14 +217,14 @@ def drawSunSettingBehindMountains(t):
 def getNewNote(baseFreq,nSemitones):
       return baseFreq*2**(nSemitones/12)
 
-def noteStream(noteList,counter=0):
+def noteStream(noteList,counter):
     note = noteList[counter]
     counter += 1
     if counter == len(noteList): counter = 0
     return note, counter
 
 ##Add the play_tone function here
-def play_tone(x, y,radius):
+def play_tone(x, y,radius, counter):
     # Map x and y coordinates to frequencies
     base_frequency = 220.0  # Adjust as needed
 
@@ -240,7 +240,8 @@ def play_tone(x, y,radius):
     #We can get rid of all of this
     x_scale = 5.0  # Adjust to change the scale of the x-axis mapping
     y_scale = 2.0  # Adjust to change the scale of the y-axis mapping
-    note, counter = noteStream(counter,semitoneListMajor)
+    note, counter = noteStream(semitoneListMajor, counter)
+    print(note, counter)
     frequency = getNewNote(base_frequency, note)
     #And replace it with:
     #frequency = getNewNote(base_frequency,
@@ -280,6 +281,7 @@ def play_tone(x, y,radius):
     play_obj = sa.play_buffer((wave * 32767).astype(np.int16), 1, 2, sample_rate)
     play_obj.wait_done()
 
+    return counter
 ##HERE IS WHERE THE DRAWING WILL HAPPEN, WE WILL CALL THE FUNCTIONS
 ##DEFINED ABOVE IN VARIOUS WAYS
 
@@ -296,7 +298,7 @@ t.hideturtle()
 screen.tracer(0)
 radius = 10 #start the radius at 10
 modFreq = 10 #change the radius and modFreq after 10 initial circles are drawn
-count = 0
+counter = 0
 for i in range(400): #draw 400 circles and play 400 notes
     #draw a circle
     x = 0
@@ -323,7 +325,7 @@ for i in range(400): #draw 400 circles and play 400 notes
     drawACircle(t,x,y,radius,random.choice(myColors), random.choice(myColors))
     screen.update()
     
-    play_tone(x,y,radius) #need to add and adapt this function from
+    counter = play_tone(x,y,radius,counter) #need to add and adapt this function from
                           #play_tone_function_chatgpt.py
 #This keeps the turtle screen active until it is clicked on
 #to exit
