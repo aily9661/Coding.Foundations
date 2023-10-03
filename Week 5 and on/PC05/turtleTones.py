@@ -224,7 +224,7 @@ def noteStream(noteList,counter):
     return note, counter
 
 ##Add the play_tone function here
-def play_tone(x, y,radius, counter):
+def play_tone(x, y,radius, myNote):
     # Map x and y coordinates to frequencies
     base_frequency = 220.0  # Adjust as needed
 
@@ -240,9 +240,7 @@ def play_tone(x, y,radius, counter):
     #We can get rid of all of this
     x_scale = 5.0  # Adjust to change the scale of the x-axis mapping
     y_scale = 2.0  # Adjust to change the scale of the y-axis mapping
-    note, counter = noteStream(semitoneListMajor, counter)
-    print(note, counter)
-    frequency = getNewNote(base_frequency, note)
+    frequency = myNote
     #And replace it with:
     #frequency = getNewNote(base_frequency,
     # random.choice(semiToneListMajor or semiToneListMinor))
@@ -280,8 +278,6 @@ def play_tone(x, y,radius, counter):
     # Play the sine wave
     play_obj = sa.play_buffer((wave * 32767).astype(np.int16), 1, 2, sample_rate)
     play_obj.wait_done()
-
-    return counter
 ##HERE IS WHERE THE DRAWING WILL HAPPEN, WE WILL CALL THE FUNCTIONS
 ##DEFINED ABOVE IN VARIOUS WAYS
 
@@ -296,9 +292,9 @@ t.hideturtle()
 
 #draw some circles and play some tones
 screen.tracer(0)
-radius = 10 #start the radius at 10
 modFreq = 10 #change the radius and modFreq after 10 initial circles are drawn
 counter = 0
+radii = [30,30,30,60,60]
 for i in range(400): #draw 400 circles and play 400 notes
     #draw a circle
     x = 0
@@ -318,14 +314,17 @@ for i in range(400): #draw 400 circles and play 400 notes
     #will change the rhythym because the bigger the radius
     #the longer the duration and the smaller the modFreq
     #the more often both things will be changed
+    closeEncounter = [415.30,466.16,369.99,185.00,277.18]
+    radius = 10
+    myNote, counter = noteStream(closeEncounter, counter)
     if i % modFreq == 0:
         radius = random.randint(10,100)
         modFreq = random.randint(3,9)
     #will draw a circle with both a stroke and fill color
-    drawACircle(t,x,y,radius,random.choice(myColors), random.choice(myColors))
+    drawACircle(t,x,y,radii[counter-1],random.choice(myColors), random.choice(myColors))
     screen.update()
     
-    counter = play_tone(x,y,radius,counter) #need to add and adapt this function from
+    play_tone(x,y,radius,myNote) #need to add and adapt this function from
                           #play_tone_function_chatgpt.py
 #This keeps the turtle screen active until it is clicked on
 #to exit
