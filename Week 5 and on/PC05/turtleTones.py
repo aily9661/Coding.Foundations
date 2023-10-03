@@ -217,6 +217,12 @@ def drawSunSettingBehindMountains(t):
 def getNewNote(baseFreq,nSemitones):
       return baseFreq*2**(nSemitones/12)
 
+def noteStream(noteList,counter=0):
+    note = noteList[counter]
+    counter += 1
+    if counter == len(noteList): counter = 0
+    return note, counter
+
 ##Add the play_tone function here
 def play_tone(x, y,radius):
     # Map x and y coordinates to frequencies
@@ -234,7 +240,8 @@ def play_tone(x, y,radius):
     #We can get rid of all of this
     x_scale = 5.0  # Adjust to change the scale of the x-axis mapping
     y_scale = 2.0  # Adjust to change the scale of the y-axis mapping
-    frequency = getNewNote(base_frequency,random.choice(semitoneListMajor))
+    note, counter = noteStream(counter,semitoneListMajor)
+    frequency = getNewNote(base_frequency, note)
     #And replace it with:
     #frequency = getNewNote(base_frequency,
     # random.choice(semiToneListMajor or semiToneListMinor))
@@ -272,6 +279,7 @@ def play_tone(x, y,radius):
     # Play the sine wave
     play_obj = sa.play_buffer((wave * 32767).astype(np.int16), 1, 2, sample_rate)
     play_obj.wait_done()
+
 ##HERE IS WHERE THE DRAWING WILL HAPPEN, WE WILL CALL THE FUNCTIONS
 ##DEFINED ABOVE IN VARIOUS WAYS
 
@@ -288,6 +296,7 @@ t.hideturtle()
 screen.tracer(0)
 radius = 10 #start the radius at 10
 modFreq = 10 #change the radius and modFreq after 10 initial circles are drawn
+count = 0
 for i in range(400): #draw 400 circles and play 400 notes
     #draw a circle
     x = 0
@@ -313,6 +322,7 @@ for i in range(400): #draw 400 circles and play 400 notes
     #will draw a circle with both a stroke and fill color
     drawACircle(t,x,y,radius,random.choice(myColors), random.choice(myColors))
     screen.update()
+    
     play_tone(x,y,radius) #need to add and adapt this function from
                           #play_tone_function_chatgpt.py
 #This keeps the turtle screen active until it is clicked on

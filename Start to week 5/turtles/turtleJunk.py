@@ -7,35 +7,37 @@ screen.bgcolor("white")
 screen.title("Parametric Butterfly")
 
 # Create a Turtle object
-butterfly = turtle.Turtle()
-butterfly.shape("turtle")
-butterfly.speed(0)  # Set the drawing speed
+turts = []
+turts2 = []
 
 # Define colors for the wings
-wing_colors = ["red", "blue", "green", "purple"]
+colors = ["red", "blue", "green", "purple"]
 
-# Function to calculate the x and y coordinates using parametric equations
-def butterfly_curve(t):
-    x = math.sin(t) * (math.exp(math.cos(t)) - 2 * math.cos(4 * t) - math.sin(t/12)**5)
-    y = math.cos(t) * (math.exp(math.cos(t)) - 2 * math.cos(4 * t) - math.sin(t/12)**5)
-    return x * 100, y * 100
+x,y,y2,x2 = 0,-250,-250,0
+for i in range(100):
+    turts.append(turtle.Turtle())
+    turts2.append(turtle.Turtle())
 
-# Draw the butterfly curve with colorful wings
-butterfly.penup()
-butterfly.goto(butterfly_curve(0))
-butterfly.pendown()
+    turts[i].goto(x,y)
+    turts2[i].goto(x2,y2)
 
-for t in range(0, 628, 1):  # Iterate from 0 to 2*pi
-    x, y = butterfly_curve(t / 100.0)
-    butterfly.goto(x, y)
-    
-    # Set the fill color for the wings based on the list of colors
-    color_index = t // 157  # Adjust this value to change how often colors change
-    butterfly.fillcolor(wing_colors[color_index % len(wing_colors)])
-    butterfly.begin_fill()
-    butterfly.circle(1)  # Draw a small circle at each point to fill the wings
-    butterfly.end_fill()
+    turts[i].penup()
+    turts2[i].penup()
 
-# Hide the Turtle and display the result
-butterfly.hideturtle()
-screen.mainloop()
+    turts[i].setheading((i*10)+90)
+    turts2[i].setheading((i*-10)+90)
+
+    turts[i].pendown()
+    turts2[i].pendown()
+
+    turts[i].forward(100/(i+1))
+    turts2[i].forward(100/(i+1))
+
+    turts[i].hideturtle()
+    turts2[i].hideturtle()
+
+    x = turts[i].xcor()
+    y = turts[i].ycor()
+
+    x2= turts2[i].xcor()
+    y2 = turts2[i].ycor()
