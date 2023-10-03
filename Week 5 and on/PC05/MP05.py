@@ -1,7 +1,5 @@
+#newnote = baseFreq * 2.0**(N/12)
 def getNewNote(baseFreq,nSemitones):
-      return baseFreq*2**(nSemitones/12)
+      return baseFreq * 2.0 ** (nSemitones/12)
 
-baseFrequency = 440
-nSemitones = 3
-
-print(getNewNote(baseFrequency,nSemitones))
+newNote = getNewNote()
