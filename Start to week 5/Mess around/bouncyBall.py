@@ -1,5 +1,6 @@
 import turtle
 import random
+import time
 
 # Set up the Turtle screen
 screen = turtle.Screen()
@@ -13,6 +14,7 @@ t.speed(0)
 colors = ["red","orange","grey","green","yellow"]
 # Function to create a new bouncing ball
 def drawBall(y,color = random.choice(colors)):
+    screen.tracer(0)
     while True:
         t.penup()  
         y+=10
@@ -23,6 +25,7 @@ def drawBall(y,color = random.choice(colors)):
         t.dot(25)
         screen.update()
         t.clear()
+        time.sleep(0.1)
         
 
 # Close the window when clicked (optional)

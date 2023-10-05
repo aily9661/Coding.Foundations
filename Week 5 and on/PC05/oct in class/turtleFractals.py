@@ -215,6 +215,7 @@ def drawSunSettingBehindMountains(t):
     
 ##PUT YOUR drawPolygon() FUNCTION HERE!!!
 def drawPolygon(t,x,y,numSides,sideLength,strokeColor="yellow", fillColor="NONE"):
+    myVertexes = []
     angle_to_rotate = 360//numSides
     t.penup()
     t.goto(x-(sideLength/2),y-(sideLength/2))
@@ -222,6 +223,8 @@ def drawPolygon(t,x,y,numSides,sideLength,strokeColor="yellow", fillColor="NONE"
     for i in range(numSides):
         t.forward(sideLength)
         t.left(angle_to_rotate)
+        myVertexes.append(t.pos())
+    return myVertexes
 
 #a function that returns the min/max
 #(x,y) values for a list of vertices
@@ -254,7 +257,7 @@ def drawFractal(t,myVertexes):
         t.goto(vrtx) #now we only need to pass in one variable because
         t.pendown()  #it is a tuple, i.e. and ordered-pair (a,b)
         t.width(3) #sets pencil width to 3, makes dot bigger
-        t.dot("red")
+        t.dot(0.25,"blue")
 
     number_of_points = 100000 # number of points to draw
     #random starting point
@@ -269,14 +272,15 @@ def drawFractal(t,myVertexes):
     randomVertex = (0,0)
     
     for i in range(number_of_points):
-
+        t.goto(randomPoint)
+        t.dot(0.25,"blue")
         # 1. Pick a random vertext
-
+        randomVertex = random.choice(myVertexes)
         #2. 
         # go to mid point between the random vertex and point
         # midPoint formula for 2 points (x1,y1) and (x2,y2): 
         # midPoint = (x1 + x2)/2 , (y1+y2)/2
-
+        randomPoint = ((randomPoint[0]+randomVertex[0])/2,(randomPoint[1]+randomVertex[1])/2)
         #iterate for 100,000 steps!!
         
         #special code for updating the drawing quickly
@@ -347,8 +351,8 @@ t.hideturtle()
 # "screen.update()" call all the way to the left?
 
 #draw some shapes using our functions
-t.width(3)  
-myVertexes = t.pos()
+t.width(3)
+myVertexes = drawPolygon(t,0,0,3,600,"red","NONE")
 drawFractal(t,myVertexes)
 
 screen.exitonclick()
