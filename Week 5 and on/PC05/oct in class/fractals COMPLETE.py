@@ -271,7 +271,7 @@ def drawFractal(t,myVertexes,ruleOne):
 
     for i in range(number_of_points):
         t.goto(randomPoint)
-        t.dot(0.25,getRainbowColor(prevDist/colorScale))
+        t.dot(2,getRainbowColor(prevDist/colorScale))
 
         if ruleOne:
             randomVertex = random.choice(myVertexes) # pick a random vertex
@@ -286,11 +286,12 @@ def drawFractal(t,myVertexes,ruleOne):
         
         prevDist = math.sqrt((randomPoint[0]-prevRandomPoint[0])**2 +
                              (randomPoint[1]-prevRandomPoint[1])**2)
+        
          #store
         prevVertex = randomVertex
         prevRandomPoint = randomPoint  
     
-        if i % 10000 == 0: # update for every 1000 moves, this part is for performance reason only
+        if i % 1000 == 0: # update for every 1000 moves, this part is for performance reason only
             rt = turtle.Turtle() # use new turutle
             rt.up()
             rt.hideturtle()

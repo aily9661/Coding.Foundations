@@ -14,7 +14,7 @@ myColors = ["yellow", "gold", "orange", "red", "maroon", "violet", "magenta", "p
 # and a width and height in pixels (1024px by 1024px here) 
 screen = turtle.Screen()
 screen.bgcolor("black")
-screen.setup(1024,1024) #make the drawing canvas 1024x1024 pixels
+screen.setup(768,768) #make the drawing canvas 1024x1024 pixels
 screen.title("Drawing Basic Shapes Using Functions")
 
 # Create a Turtle object
@@ -246,45 +246,52 @@ def getMinMaxVertex(myVertexes):
 
     return (xmin,xmax),(ymin,ymax) 
 
-def drawFractal(t,myVertexes):
+def drawFractal(t,myVertexes,ruleOne):
     screen.tracer(0)
     t.width(6)
     x_bnd, y_bnd = getMinMaxVertex(myVertexes)
-    colorScale = math.sqrt((x_bnd[1]-x_bnd[0])**2 + (y_bnd[1]-y_bnd[0])**2)
+    colorScale = math.sqrt((x_bnd[1]-x_bnd[0])**2 + (y_bnd[1]-y_bnd[0]))
+    print(colorScale)
     #DRAW DOTS FOR THE VERTEXES
     for vrtx in myVertexes:
         t.penup()
         t.goto(vrtx) #now we only need to pass in one variable because
         t.pendown()  #it is a tuple, i.e. and ordered-pair (a,b)
         t.width(3) #sets pencil width to 3, makes dot bigger
-        t.dot(0.25,"blue")
+        t.dot("red")
 
     number_of_points = 100000 # number of points to draw
     #random starting point
-    #note, this is a tuple!!
     randomPoint = (random.uniform(-200,200),random.uniform(-200,200))
-    #we don't want to actively draw with the
-    #turtle, too many points! We only call screen.update()
-    #for every 10,000 steps in this case to decrease render time
+    #t = turtle.Turtle()
     t.up()
     t.hideturtle()
+    prevDist = 0.0
     prevVertex = (0,0)
-    randomVertex = (0,0)
-    
+    randomVertex = (0,0) 
+    prevRandomPoint = (0,0)
+
     for i in range(number_of_points):
         t.goto(randomPoint)
-        t.dot(0.25,"blue")
-        # 1. Pick a random vertext
-        randomVertex = random.choice(myVertexes)
-        #2. 
+        t.dot(0.25,getRainbowColor(prevDist/colorScale))
+
+        if ruleOne:
+            randomVertex = random.choice(myVertexes) # pick a random vertex
+        else:
+            while randomVertex == prevVertex:
+                randomVertex = random.choice(myVertexes)  
         # go to mid point between the random vertex and point
         # midPoint formula for 2 points (x1,y1) and (x2,y2): 
         # midPoint = (x1 + x2)/2 , (y1+y2)/2
-        randomPoint = ((randomPoint[0]+randomVertex[0])/2,(randomPoint[1]+randomVertex[1])/2)
-        #iterate for 100,000 steps!!
+        randomPoint = ((randomVertex[0]+randomPoint[0])/2,
+                       (randomVertex[1]+randomPoint[1])/2) 
         
-        #special code for updating the drawing quickly
-        #will discuss in class
+        prevDist = math.sqrt((randomPoint[0]-prevRandomPoint[0])**2 +
+                             (randomPoint[1]-prevRandomPoint[1])**2)
+         #store
+        prevVertex = randomVertex
+        prevRandomPoint = randomPoint  
+    
         if i % 10000 == 0: # update for every 1000 moves, this part is for performance reason only
             rt = turtle.Turtle() # use new turutle
             rt.up()
@@ -352,7 +359,7 @@ t.hideturtle()
 
 #draw some shapes using our functions
 t.width(3)
-myVertexes = drawPolygon(t,0,0,3,600,"red","NONE")
-drawFractal(t,myVertexes)
+myVertexes = drawPolygon(t,0,0,4,250,"red","NONE")
+drawFractal(t,myVertexes,False)
 
 screen.exitonclick()
