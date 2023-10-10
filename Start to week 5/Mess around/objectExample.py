@@ -3,10 +3,10 @@ class myClass:
         self.name = name
         self.age = age
 
-    def __str__(self): #return when just object is called CAN BE CALLED
+    def __str__(self): #return when just object is called *CAN BE CALLED*
         return f"{self.name}({self.age})"
     
-    def myFunc(self,hobby): #object's functions CAN BE CALLED
+    def myFunc(self,hobby): #object's functions *CAN BE CALLED*
         print("Hello my name is " + self.name + ", I am " + str(self.age) + " and I like " + hobby)
     
 
