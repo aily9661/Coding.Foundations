@@ -356,7 +356,7 @@ t.hideturtle()
 #below. What happens? What happens if you indent the
 # "screen.update()" call all the way to the left?
 
-myVertexes = drawPolygon(t,0,0,4,800,"blue","NONE")
+myVertexes = drawPolygon(t,0,0,8,250,"blue","NONE")
 drawFractal(t,myVertexes,False)
 
 screen.exitonclick()
