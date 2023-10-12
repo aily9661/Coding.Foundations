@@ -18,7 +18,7 @@ h = 800
 win = pygame.display.set_mode((w, h))
 clock = pygame.time.Clock() # clock for animation
 font = pygame.font.Font(None, 25) # set font size
-pygame.mixer.music.load('spaceSong.mp3') # royalty freemusic used for game from zapsplat
+pygame.mixer.music.load('/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/spaceSong.mp3') # royalty freemusic used for game from zapsplat
 
 class Player(): # player class
     def __init__(self, pXPos, pYPos):
@@ -28,7 +28,7 @@ class Player(): # player class
         self.player = pygame.Rect(self.x,self.y,self.size,self.size/2)
         self.playerFace = pygame.Surface((self.size,self.size/2))
         self.step = 15
-        spaceShipPic = 'spaceShip.gif' # ship image
+        spaceShipPic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/spaceShip.gif' # ship image
         self.spaceShipScreen = pygame.image.load(spaceShipPic)  # loading the image on top of the game
 
     def show(self):
@@ -88,11 +88,11 @@ class Enemy(): # create enemy class
         self.collision = 0 # tests if enemy has been collided with
         self.eXStep = 2
         self.eYStep = 1
-        self.redPic = 'redGoblin.gif' # ship image
+        self.redPic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/redGoblin.gif' # ship image
         self.redGobScreen = pygame.image.load(self.redPic)  # loading the image on top of the game
-        self.purplePic = 'purpleGoblin.gif' # ship image
+        self.purplePic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/purpleGoblin.gif' # ship image
         self.purpleGobScreen = pygame.image.load(self.purplePic)  # loading the image on top of the game
-        self.orangePic = 'orangeGoblin.gif' # ship image
+        self.orangePic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/orangeGoblin.gif' # ship image
         self.orangeGobScreen = pygame.image.load(self.orangePic)  # loading the image on top of the game
         self.death = False
 
@@ -158,7 +158,7 @@ class Enemy(): # create enemy class
 
 class Backdrop():# class for backgrond
     def __init__(self):
-        self.starPic = 'starBack.gif'
+        self.starPic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/starBack.gif'
         self.backdropScreen = pygame.image.load(self.starPic)  # loading the image on top of the game
         self.y = 0
         self.step = 0.5
@@ -415,7 +415,7 @@ def startScreen(gameStart): #game Start screen
     pygame.mixer.music.play() # start music
     while gameStart:
         gsScreen = pygame.display.set_mode((w, h))
-        GameStartPic = 'spaceGoblinsTitle.gif' # image that will show up if you lose the game
+        GameStartPic = '/Users/aidanlynch/Documents/GitHub/Coding.Foundations/Space Goblins/spaceGoblinsTitle.gif' # image that will show up if you lose the game
         GameStartScreen = pygame.image.load(GameStartPic)  # loading the image on top of the game
         gsScreen.blit(GameStartScreen,(0,0)) # making the loaded image appear'''
         pygame.display.update()
