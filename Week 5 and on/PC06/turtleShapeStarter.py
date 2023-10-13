@@ -70,12 +70,17 @@ class turtleShape(object):
         #PSEUDOCODE BEGIN
 
         #<property x of turtleShape is assigned to the passed-in variable x>
+        self.x = x
         #<property y of turtleShape is assigned to the passed-in variable y>
+        self.y = y
         #<turn off screen updates by calling "screen.tracer(0)" on the turtle property>
+        self.turtle.screen.tracer(0)
         #<clear the current turtle graphics by calling "clear()" on the turtle property>
+        self.turtle.clear()
         #<call self.draw()>
+        self.draw()
         #<update the screen by calling "screen.update()" on the turtle property>
-
+        self.turtle.screen.update()
         #PSEUDOCODE END
         print("Dragged on Shape")
 
@@ -112,6 +117,20 @@ class turtleSquare(turtleShape):
 #self.numSides and self.sideLength
 
 #BEGIN CLASS DEINITION
+class turtlePolygon(turtleShape):
+    def __init__(self,x,y,xoff,yoff,numSides,sideLength):
+        super().__init__(x,y,xoff,yoff)
+        self.numSides = numSides
+        self.sideLength = sideLength
+
+    def draw(self):
+        print("TURTLE POLYGON DRAW")
+        super().draw()
+        rotationAngle = 360//self.numSides
+
+        for i in range(numSides):
+            self.turtle.forward(sideLength)
+            self.turtle.left(rotationAngle)
 
         #EXTRA CREDIT ONE: CLOSE THE POLYGON WITH numSides THAT DOES NOT DIVIDE EVENLY INTO 360
         #EXTRA CREDIT ONE, consists of three lines of code. An if statement that
@@ -182,11 +201,20 @@ for i in range(10):
     #color using the setStrokeColor() method of turtleShape. Call the "draw()" function.
     #Append the instantiated child object to the appropriate list. Here is an example
     #for the turtleCircle child class. Repeat for turtleSquare and turtlePolygon: 
-    
     myCircle = turtleCircle(x,y,0,radius,radius)
     myCircle.setStrokeColor(random.choice(myColors))
     myCircle.draw()
     myCircles.append(myCircle)
+
+    mySquare = turtleSquare(x,y,sideLength/2,sideLength/2,sideLength)
+    mySquare.setStrokeColor(random.choice(myColors))
+    mySquare.draw()
+    mySquares.append(mySquare)
+
+    myPolygon = turtlePolygon(x,y,sideLength/2,sideLength/2, numSides, sideLength)
+    myPolygon.setStrokeColor(random.choice(myColors))
+    myPolygon.draw()
+    myPolygons.append(myPolygon)
 
 #append our lists of different child turtleShape objects
 #to allShapes, which will be a list of a list of objects   
@@ -208,6 +236,10 @@ allShapes.append(myPolygons)
 def hideallturtles():
     print("Goodbye: ",len(allShapes))
     #<for "shapeTypes" over allShapes>
+    for shapeTypes in allShapes:
+        for shapeObject in shapeTypes:
+            shapeObject.turtle.hideTurtle()
+    screen.update()
     #    <for "shapeObject" over "shapeTypes">
     #         <call "shapeObject.turtle.hideturtle()">
     #<update main screen>
@@ -217,6 +249,10 @@ def hideallturtles():
 def showallturtles():
     print("HELLO: ",len(allShapes))
     #<for "shapeTypes" over allShapes>
+    for shapeTypes in allShapes:
+        for shapeObject in shapeTypes:
+            shapeObject.turtle.showturtle()
+    screen.update()
     #    <for "shapeObject" over "shapeTypes">
     #         <call "shapeObject.turtle.showturtle()">
     #<update main screen>
