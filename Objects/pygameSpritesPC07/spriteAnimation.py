@@ -87,13 +87,13 @@ class Player(pygame.sprite.Sprite):
         if self.is_jumping:
             self.current_jumpSprite += 0.25
 
-        if self.current_jumpSprite >= len(self.jumpSprites):
-            self.current_jumpSprite = 0
-            self.is_jumping = False
+            if self.current_jumpSprite >= len(self.jumpSprites):
+                self.current_jumpSprite = 0
+                self.is_jumping = False
 
-        #set self.image which is what is drawn when the moving_sprites.draw(screen)
-        #call is made below in the main while loop. 
-        self.image = self.jumpSprites[int(self.current_jumpSprite)]
+            #set self.image which is what is drawn when the moving_sprites.draw(screen)
+            #call is made below in the main while loop. 
+            self.image = self.jumpSprites[int(self.current_jumpSprite)]
 
     #When any of the arrow keys are pressed (direction != 0 below in the main loop)
     #we set self.is_animating to True 
