@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         #animation. When we push 'j' in the main event loop this boolean
         #will be set to true
 
-        #<new boolean property for controlling jump animation state>
+        self.is_jumping = False
 
         #Our list of images saved as a property called self.sprites
         #we initialize it as an empty list and append to it in a for loop
@@ -29,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         #these images are included in your starter code as "skeljmp_0.png", "skeljmp_1.png"
         #etc..
 
-        #<a new list for storing and managing the "jump" animation>
+        self.jumpSprites = []
         
         #a loop for loading images
         for i in range(6):
@@ -38,13 +38,14 @@ class Player(pygame.sprite.Sprite):
         #PC07 (3): We need another loop to load our jump animation images and append them
         # to our new list. In the start file there are 8 skeljmp_N.png images. You'll
         # append these images to the list you created above
-        #<a new for loop that loads our new skeljmp images and appends them to our new list>
+        for i in range(8):
+            self.jumpSprites.append(pygame.image.load('skeljmp_'+ '%01d' % i +'.png'))  
          
         #a property for storing the current index of the list
         self.current_sprite = 0
 
         #PC07 (4): we need a new property to index into our new list of jump image
-        #<a new property for keeping track of an index for our new list of jmp images>
+        self.current_jumpSprite = 0
 
         #initial image will be the first one, index 0
         self.image = self.sprites[self.current_sprite]
@@ -65,42 +66,34 @@ class Player(pygame.sprite.Sprite):
     # we will need to develop our update function to animate
     # our sprite and perhaps add another function!
     def update(self):
+        self.runAnimationBasic()
+        self.runAnimationJump()
+
+    def runAnimationBasic(self):
         #increment self.current_sprite if self.is_animating is True
         if self.is_animating:
             self.current_sprite += 0.25
 
-        if self.current_sprite >= len(self.sprites):
-            self.current_sprite = 0
-            self.is_animating = False
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+                self.is_animating = False
+
+            #set self.image which is what is drawn when the moving_sprites.draw(screen)
+            #call is made below in the main while loop. 
+            self.image = self.sprites[int(self.current_sprite)]
+
+    def runAnimationJump(self):
+        #increment self.current_sprite if self.is_animating is True
+        if self.is_jumping:
+            self.current_jumpSprite += 0.25
+
+        if self.current_jumpSprite >= len(self.jumpSprites):
+            self.current_jumpSprite = 0
+            self.is_jumping = False
 
         #set self.image which is what is drawn when the moving_sprites.draw(screen)
         #call is made below in the main while loop. 
-        self.image = self.sprites[int(self.current_sprite)]
-    
-    #MP07 -- Create a new method "runAnimationBasic()" that does what the update()
-    #function currently does. The idea is that we may have several animation
-    #behaviors and our update() function can call each of the animation methods.
-    #This is mainly to keep things clean and separate different animation behaviors
-    #from each other to decrease the chance of introducing errors.
-    #For the finished PC07 project we will have "runAnimationBasic()" and 
-    # "runAnimationJump()"
-
-    #Here is the stub for runAnimationBasic() uncomment the line below to develop
-    #this function (which will literally be copying the current contents of update()
-    # into this function) to be replaced by calling this function instead
-    #What is different about calling a method inside a class versus outside the class?
-
-    #def runAnimationBasic(self):
-
-    #PC07 (5): We now want to write a function "runAnimationJump()" it is going to be the
-    #exact same structure of "runAnimationBasic()" but using the new properties we defined
-    #in the Player class (our new boolean, our new list, and our new index variable)
-    #in our "update()" function, we will just call "animationBasic()" and "animationJump()"
-    #this will keep different animation behaviors separated from each other and reduce
-    #the introduction of erros
-
-    #<a runAnimationJump() function, it has the same structure of runAnimationBasic, 
-    #but needs to use the new properties we added to the Player class>
+        self.image = self.jumpSprites[int(self.current_jumpSprite)]
 
     #When any of the arrow keys are pressed (direction != 0 below in the main loop)
     #we set self.is_animating to True 
@@ -111,7 +104,10 @@ class Player(pygame.sprite.Sprite):
     #boolean to true. It is the same as animate() but operates on the first new property
     #you added to the Player class above
 
-    #<a new "animateJump()" function
+    def animateJump(self):
+        self.is_jumping = True
+
+
        
 #initializes the pygame environment
 pygame.init()
@@ -160,9 +156,11 @@ while True:
     #it should call "animationJump()" from above which sets our jump animation
     #boolean to True
 
-    #<a new variable that captures the "pressed state" of the "j" key
+    jumped = keystate[pygame.K_j]
     #if the "j" is pressed, this variable will be assigned the boolean "True"
     #use this variable in an if statement to call "animationJump()" if it is "True">
+    if jumped:
+        player.animateJump()
 
     if directionX != 0:
         player.animate()
