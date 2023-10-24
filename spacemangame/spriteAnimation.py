@@ -4,7 +4,7 @@ import sys
 class Player(pygame.sprite.Sprite):
     speed = 10
 
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, pos_x, pos_y, colored, color):
         super().__init__()
 
         # Initialize animation flags
@@ -12,9 +12,14 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
 
         # Lists for storing images
-        self.sprites_left = [pygame.image.load('spacemanwalk_' + str(i) + '.png') for i in range(9)]
-        self.sprites_right = [pygame.transform.flip(image, True, False) for image in self.sprites_left]
-        self.jumpSprites = [pygame.image.load('spacemanjump_' + str(i) + '.png') for i in range(3)]
+        if colored:
+            self.sprites_left = [self.getColorImage(pygame.image.load('spacemanwalk_' + str(i) + '.png'),color) for i in range(9)]
+            self.sprites_right = [pygame.transform.flip(image, True, False) for image in self.sprites_left]
+            self.jumpSprites = [self.getColorImage(pygame.image.load('spacemanjump_' + str(i) + '.png'),color) for i in range(3)]
+        else:
+            self.sprites_left = [pygame.image.load('spacemanwalk_' + str(i) + '.png') for i in range(9)]
+            self.sprites_right = [pygame.transform.flip(image, True, False) for image in self.sprites_left]
+            self.jumpSprites = [pygame.image.load('spacemanjump_' + str(i) + '.png') for i in range(3)]
 
         # Initialize current sprite, direction, and image
         self.current_sprite = 0
@@ -81,6 +86,16 @@ class Player(pygame.sprite.Sprite):
         self.rect.move_ip(0, -step)
         self.rect = self.rect.clamp((0, 0, 640, 480))
 
+    def getColorImage(self,myImage,color):
+        colorImage = pygame.Surface(myImage.get_size()).convert_alpha()
+        colorImage.fill(color)
+        myImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+        return myImage
+    
+    def returnXY(self):
+        rect = self.get_rect()
+        return rect
+
 # Initialize the pygame environment
 pygame.init()
 
@@ -99,8 +114,8 @@ pygame.display.set_caption("Sprite Animation")
 moving_sprites = pygame.sprite.Group()
 
 # Create player instances and add them to the sprite group
-player = Player(0, 240)
-zombie = Player(40,360,pygame.Color(0,255,0))
+player = Player(0, 240,False,pygame.Color(0,0,0))
+zombie = Player(40,360,True,pygame.Color(0,255,0))
 moving_sprites.add([player, zombie])
 jumpCounter = 0
 jumpPause = 0
@@ -155,3 +170,4 @@ while True:
 
     # Limit the frame rate
     clock.tick(60)
+    print(player.returnXY())
