@@ -63,7 +63,7 @@ class Player(pygame.sprite.Sprite):
 
     def runAnimationJump(self):
         if self.is_jumping:
-            self.current_jumpSprite += 0.125
+            self.current_jumpSprite += 0.1
 
             if self.current_jumpSprite >= len(self.jumpSprites):
                 self.current_jumpSprite = 0
@@ -99,8 +99,9 @@ pygame.display.set_caption("Sprite Animation")
 moving_sprites = pygame.sprite.Group()
 
 # Create player instances and add them to the sprite group
-player = Player(0, 100)
-moving_sprites.add([player])
+player = Player(0, 240)
+zombie = Player(40,360,pygame.Color(0,255,0))
+moving_sprites.add([player, zombie])
 jumpCounter = 0
 jumpPause = 0
 
@@ -121,23 +122,24 @@ while True:
     if jumped:
         if jumpPause < 0:
             player.animateJump()
-            jumpCounter = 20
+            jumpCounter = 25
             jumpPause = 25            
 
     if directionX != 0:
         player.animate()
         player.moveX(directionX)
 
-    if directionY != 0:
-        player.animate()
-        player.moveY(directionY)
+    #if directionY != 0:
+        #player.animate()
+        #player.moveY(directionY)
 
-    if jumpCounter > 10:
-        jumpCounter -= 1
-        player.jumpUp(20-jumpCounter)
-    elif jumpCounter > 0:
-        jumpCounter -= 1
-        player.jumpUp(jumpCounter-10)
+    if jumpCounter > 7.5 and jumpCounter < 16:
+        jumpCounter -= 0.25
+        player.jumpUp(15-jumpCounter)
+    elif jumpCounter > 0 and jumpCounter < 16:
+        jumpCounter -= 0.25
+        player.jumpUp(jumpCounter-7.5)
+    else: jumpCounter -= 0.5
     jumpPause-=1
     # Clear the screen
     screen.fill((0, 0, 0))
