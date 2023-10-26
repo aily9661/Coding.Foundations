@@ -47,6 +47,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.move_ip(0, direction * self.speed)
         self.rect = self.rect.clamp((0, 0, 640, 480))
 
+    def returnPos(self):
+        return self.rect.x, self.rect.y
+
+    def zombieMove(self,pos):
+        pass
+
     def update(self):
         self.runAnimationBasic()
         self.runAnimationJump()
@@ -91,10 +97,6 @@ class Player(pygame.sprite.Sprite):
         colorImage.fill(color)
         myImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
         return myImage
-    
-    def returnXY(self):
-        rect = self.get_rect()
-        return rect
 
 # Initialize the pygame environment
 pygame.init()
@@ -138,15 +140,15 @@ while True:
         if jumpPause < 0:
             player.animateJump()
             jumpCounter = 25
-            jumpPause = 25            
+            jumpPause = 100         
 
     if directionX != 0:
         player.animate()
         player.moveX(directionX)
 
-    #if directionY != 0:
-        #player.animate()
-        #player.moveY(directionY)
+    if directionY != 0:
+        player.animate()
+        player.moveY(directionY)
 
     if jumpCounter > 7.5 and jumpCounter < 16:
         jumpCounter -= 0.25
@@ -156,6 +158,18 @@ while True:
         player.jumpUp(jumpCounter-7.5)
     else: jumpCounter -= 0.5
     jumpPause-=1
+
+    #capture player position
+    playerPosX, playerPosY = player.returnPos()
+
+    #zombie movement
+    zombX, zombY = zombie.returnPos()
+    zombX = playerPosX-zombX
+    zombY = playerPosY-zombY
+    if zombX > 23 or zombX < -23:
+        zombie.animate()
+    zombie.moveX(zombX*0.005)
+    zombie.moveY(zombY*0.005)
     # Clear the screen
     screen.fill((0, 0, 0))
 
@@ -170,4 +184,3 @@ while True:
 
     # Limit the frame rate
     clock.tick(60)
-    print(player.returnXY())
