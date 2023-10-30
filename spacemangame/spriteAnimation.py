@@ -1,31 +1,52 @@
 import pygame
 import sys
+class AnimationData():
+    def __init__(self,fname_prefix,numFiles,color):
+        self.fnamePrefix = fname_prefix
+        self.numberOfFiles = numFiles
+        self.is_animating = False
+        self.spriteIndex = 0
+        self.spriteLeftList = []
+        self.is_facing_left = False
+
+        for i in range(self.numberOfFiles):
+            myImage = pygame.image.load(self.fnamePrefix + "%01d" % i + ".png")
+            if color != "NONE":
+                self.spriteLeftList.append(self.getColorImage(myImage,color))
+                self.spriteRightList = [pygame.transform.flip(image, True, False) for image in self.spriteLeftList]
+            else:
+                self.spriteLeftList.append(myImage)
+                self.spriteRightList = [pygame.transform.flip(image, True, False) for image in self.spriteLeftList]
+            
+    def getNextImage(self):
+        self.spriteIndex += 0.25
+
+        if self.spriteIndex >= len(self.spriteLeftList):
+            self.spriteIndex = 0
+            self.is_animating = False
+        if self.is_facing_left:
+            return self.spriteLeftList[int(self.spriteIndex)]
+        else: 
+            return self.spriteRightList[int(self.spriteIndex)]
+
+    def getColorImage(self,myImage,color):
+        colorImage = pygame.Surface(myImage.get_size()).convert_alpha()
+        colorImage.fill(color)
+        myImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+        return myImage
+    
+    def animate(self):
+        self.is_animating = True
 
 class Player(pygame.sprite.Sprite):
     speed = 10
 
-    def __init__(self, pos_x, pos_y, colored, color):
+    def __init__(self, pos_x, pos_y, color):
         super().__init__()
-
-        # Initialize animation flags
-        self.is_animating = False
-        self.is_jumping = False
-
-        # Lists for storing images
-        if colored:
-            self.sprites_left = [self.getColorImage(pygame.image.load('spacemanwalk_' + str(i) + '.png'),color) for i in range(9)]
-            self.sprites_right = [pygame.transform.flip(image, True, False) for image in self.sprites_left]
-            self.jumpSprites = [self.getColorImage(pygame.image.load('spacemanjump_' + str(i) + '.png'),color) for i in range(3)]
-        else:
-            self.sprites_left = [pygame.image.load('spacemanwalk_' + str(i) + '.png') for i in range(9)]
-            self.sprites_right = [pygame.transform.flip(image, True, False) for image in self.sprites_left]
-            self.jumpSprites = [pygame.image.load('spacemanjump_' + str(i) + '.png') for i in range(3)]
-
-        # Initialize current sprite, direction, and image
-        self.current_sprite = 0
-        self.current_jumpSprite = 0
-        self.is_facing_left = False
-        self.image = self.sprites_left[self.current_sprite]
+        self.walkingAnimation = AnimationData("spacemanwalk_",9,color)
+        self.zombieWalkingAnimation = AnimationData("zombWalk_",9,color)
+        self.jumpingAnimation = AnimationData("spacemanjump_",3,color)
+        self.image = self.walkingAnimation.getNextImage()
 
         # Get the rectangle for this image
         self.rect = self.image.get_rect()
@@ -36,9 +57,9 @@ class Player(pygame.sprite.Sprite):
     def moveX(self, direction):
         # Update direction based on movement
         if direction < 0:
-            self.is_facing_left = False
+            self.walkingAnimation.is_facing_left = False
         elif direction > 0:
-            self.is_facing_left = True
+            self.walkingAnimation.is_facing_left = True
 
         self.rect.move_ip(direction * self.speed, 0)
         self.rect = self.rect.clamp((0, 0, 640, 480))
@@ -54,49 +75,16 @@ class Player(pygame.sprite.Sprite):
         pass
 
     def update(self):
-        self.runAnimationBasic()
-        self.runAnimationJump()
-
-    def runAnimationBasic(self):
-        if self.is_animating:
-            self.current_sprite += 0.25
-
-            if self.current_sprite >= len(self.sprites_left):
-                self.current_sprite = 0
-                self.is_animating = False
-
-            # Set self.image based on direction
-            if self.is_facing_left:
-                self.image = self.sprites_left[int(self.current_sprite)]
-            else:
-                self.image = self.sprites_right[int(self.current_sprite)]
-        else: self.image = self.jumpSprites[0]
-
-    def runAnimationJump(self):
-        if self.is_jumping:
-            self.current_jumpSprite += 0.1
-
-            if self.current_jumpSprite >= len(self.jumpSprites):
-                self.current_jumpSprite = 0
-                self.is_jumping = False
-
-            self.image = self.jumpSprites[int(self.current_jumpSprite)]
-
-    def animate(self):
-        self.is_animating = True
-
-    def animateJump(self):
-        self.is_jumping = True
+        if self.walkingAnimation.is_animating:
+           self.image = self.walkingAnimation.getNextImage()
+        if self.jumpingAnimation.is_animating:
+           self.image = self.jumpingAnimation.getNextImage()
+        if self.zombieWalkingAnimation.is_animating:
+            self.image = self.zombieWalkingAnimation.getNextImage()
 
     def jumpUp(self, step):
         self.rect.move_ip(0, -step)
         self.rect = self.rect.clamp((0, 0, 640, 480))
-
-    def getColorImage(self,myImage,color):
-        colorImage = pygame.Surface(myImage.get_size()).convert_alpha()
-        colorImage.fill(color)
-        myImage.blit(colorImage, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
-        return myImage
 
 # Initialize the pygame environment
 pygame.init()
@@ -116,8 +104,8 @@ pygame.display.set_caption("Sprite Animation")
 moving_sprites = pygame.sprite.Group()
 
 # Create player instances and add them to the sprite group
-player = Player(0, 240,False,pygame.Color(0,0,0))
-zombie = Player(40,360,True,pygame.Color(0,255,0))
+player = Player(0, 240,"NONE")
+zombie = Player(40,360,pygame.Color(0,255,0))
 moving_sprites.add([player, zombie])
 jumpCounter = 0
 jumpPause = 0
@@ -134,20 +122,18 @@ while True:
     directionX = keystate[pygame.K_RIGHT] - keystate[pygame.K_LEFT]
     directionY = keystate[pygame.K_DOWN] - keystate[pygame.K_UP]
 
-    jumped = keystate[pygame.K_j]
-
-    if jumped:
-        if jumpPause < 0:
-            player.animateJump()
-            jumpCounter = 25
-            jumpPause = 100         
+    playerJumped = keystate[pygame.K_j]
+    if playerJumped and jumpPause <= 0:
+        player.jumpingAnimation.animate()
+        jumpCounter = 16
+        jumpPause = 70
 
     if directionX != 0:
-        player.animate()
+        player.walkingAnimation.animate()
         player.moveX(directionX)
 
     if directionY != 0:
-        player.animate()
+        player.walkingAnimation.animate()
         player.moveY(directionY)
 
     if jumpCounter > 7.5 and jumpCounter < 16:
@@ -167,7 +153,7 @@ while True:
     zombX = playerPosX-zombX
     zombY = playerPosY-zombY
     if zombX > 23 or zombX < -23:
-        zombie.animate()
+        zombie.zombieWalkingAnimation.animate()
     zombie.moveX(zombX*0.005)
     zombie.moveY(zombY*0.005)
     # Clear the screen
