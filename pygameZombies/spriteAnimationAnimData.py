@@ -59,6 +59,7 @@ class Player(pygame.sprite.Sprite):
         #and player.walkingAnimation.is_animating
         self.walkingAnimation = AnimationData("skel_",6,color)
         self.jumpingAnimation = AnimationData("skeljmp_",8,color)
+        self.diesAnimation = AnimationData("skeldies_",9,color)
     
         #use the getNextImage() method from self.walkingAnimation to set initial image
         self.image = self.walkingAnimation.getNextImage()
@@ -89,7 +90,32 @@ class Player(pygame.sprite.Sprite):
             self.image = self.walkingAnimation.getNextImage()
         if self.jumpingAnimation.is_animating:
             self.image = self.jumpingAnimation.getNextImage()
-       
+
+class Shot(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y,isLeft):
+        super().__init__()
+        self.shotAnimation = AnimationData("shots_",2,"NONE")
+        self.isLeft = isLeft 
+        self.speed = 5
+        if self.isLeft: 
+            self.image = self.shotAnimation.spriteList[0]
+        else: 
+            self.image = self.shotAnimation.spriteList[1]
+
+        self.rect = self.image.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+
+    def update(self):
+        if self.isLeft:
+            self.rect.move_ip(-1*self.speed, 0)
+            if self.rect.left <= 0:
+                self.kill()
+        else:
+            self.rect.move_ip(-1*self.speed, 0)
+            if self.rect.right >= SCREENRECT.width:
+                self.kill()
+
 #will add an NPC class
 class NPC(Player):
     def __init__(self,pos_x,pos_y,color,player):
@@ -166,16 +192,20 @@ pygame.display.set_caption("Sprite Animation")
 
 #pygame.sprite.Group() is a class that manages updating
 #and drawing sprites to a screen. 
-moving_sprites = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+shot_group = pygame.sprite.Group()
+npc_group = pygame.sprite.Group()
 
 #add one instance of our Player class, colored RED 
 #add two instances of our NPC class, colored GREEN
 player = Player(0,100,pygame.Color(255,0,0)) #RED
-playerTwo = NPC(0,300,pygame.Color("green"),player) #GREEN
-playerThree = NPC(0,300,pygame.Color("green"),player) #GREEN
+npcOne = NPC(0,300,pygame.Color("green"),player) #GREEN
+npcTwo = NPC(0,300,pygame.Color("green"),player) #GREEN
 
 #add the sprites to the sprite group
-moving_sprites.add([player,playerTwo,playerThree])
+player_group.add(player)
+npc_group.add([npcOne,npcTwo])
+
 
 #the main drawing and event loop of a pygame application
 while True:
@@ -197,6 +227,16 @@ while True:
         #this causes one full animation through our list
         #of images per detection of the 'j' event
         player.jumpingAnimation.animate()
+
+    shootLeft = keystate[pygame.K_k]
+    if shootLeft != 0:
+        shot = Shot(player.rect.centerx,player.rect.centery,True)
+        shot_group.add(shot)
+
+    shootRight = keystate[pygame.K_l]
+    if shootRight != 0:
+        shot = Shot(player.rect.centerx,player.rect.centery,False)
+        shot_group.add(shot)
   
     #If the left,right (diretionX) or up,down (directionY) keys
     #have been pressed then call the walkingAnimation.animate()
@@ -217,10 +257,16 @@ while True:
     screen.fill((0,0,0))
     
     #call our update function
-    moving_sprites.update()
+    player_group.update()
+    npc_group.update()
+    shot_group.update()
 
+    for npc in pygame.sprite.groupcollide(npc_group, shot_group, 0, 1).keys():
+        npc.diesAnimation.animate()
     #draw our sprites to our screen
-    moving_sprites.draw(screen)
+    player_group.draw(screen)
+    npc_group.draw(screen)
+    shot_group.draw(screen)
     
     #call pygame.display.flip() which renders a whole screen
     #for this frame
