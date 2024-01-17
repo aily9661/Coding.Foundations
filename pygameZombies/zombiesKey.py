@@ -59,8 +59,12 @@ class Player(pygame.sprite.Sprite):
         #and player.walkingAnimation.is_animating
         self.walkingAnimation = AnimationData("skel_",6,color)
         self.jumpingAnimation = AnimationData("skeljmp_",8,color)
+
+        #ASSIGNMENT: I don't spell it out for them but they need
+        #to understand to add this after they have the NPC die animation
+        #done.
         self.diesAnimation = AnimationData("skeldies_",9,color)
-    
+        self.health = 250
         #use the getNextImage() method from self.walkingAnimation to set initial image
         self.image = self.walkingAnimation.getNextImage()
         #get the rectangle for this image
@@ -86,35 +90,45 @@ class Player(pygame.sprite.Sprite):
         #booleans are True (test separately in if statements)
         #then call getNextImage() on that animation property
         #and assign the output (an image) to self.image
-        if self.walkingAnimation.is_animating:
-            self.image = self.walkingAnimation.getNextImage()
-        if self.jumpingAnimation.is_animating:
-            self.image = self.jumpingAnimation.getNextImage()
+
+        #ASSIGNMENT, just like with the NPC case they need
+        #to check is the die animation has been triggered
+        #from the second collision loop
+        if self.diesAnimation.is_animating:
+            self.image = self.diesAnimation.getNextImage()
+            if self.diesAnimation.spriteListIdx == 0:
+                self.kill()
+        else:
+            if self.walkingAnimation.is_animating:
+                self.image = self.walkingAnimation.getNextImage()
+            if self.jumpingAnimation.is_animating:
+                self.image = self.jumpingAnimation.getNextImage()
 
 class Shot(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y,isLeft):
+    def __init__(self,pos_x,pos_y,isLeft):
         super().__init__()
         self.shotAnimation = AnimationData("shots_",2,"NONE")
-        self.isLeft = isLeft 
+        self.isLeft = isLeft
         self.speed = 5
-        if self.isLeft: 
+        if self.isLeft:
             self.image = self.shotAnimation.spriteList[0]
-        else: 
+        else:
             self.image = self.shotAnimation.spriteList[1]
-
+        
         self.rect = self.image.get_rect()
         self.rect.x = pos_x
         self.rect.y = pos_y
-
+    
     def update(self):
         if self.isLeft:
             self.rect.move_ip(-1*self.speed, 0)
             if self.rect.left <= 0:
                 self.kill()
         else:
-            self.rect.move_ip(-1*self.speed, 0)
+            self.rect.move_ip(self.speed,0)
             if self.rect.right >= SCREENRECT.width:
                 self.kill()
+
 
 #will add an NPC class
 class NPC(Player):
@@ -124,32 +138,55 @@ class NPC(Player):
         self.rect = self.image.get_rect()
         self.player = player
 
+        self.diesAnimation = AnimationData("skeldies_",9,color)
+
         # Set the NPC's initial position
         self.rect.x = random.randint(0, SCREENRECT.width)
         self.rect.y = random.randint(0, SCREENRECT.height)
 
         # Set the speed the semi-random walk
         self.speed = 2
+        self.xoffset = random.randint(1,10)
+        self.yoffset = random.randint(1,10)
 
     def update(self):
-        #assign a new image
-        self.image = self.walkingAnimation.getNextImage()
+        #ASSIGNMENT is_animating may be set to True by the
+        #pygame.sprite.groupcollide loop on line 294
+        #they need to update the update() function
+        #so that we check for this first, run the die
+        #animation and then remove the NPC with self.kill()
+        #they need to realize they need to test to see
+        #that spriteListIdx == 0 which means the animation
+        #has finished running
+        if self.diesAnimation.is_animating:
+            self.image = self.diesAnimation.getNextImage()
+            if self.diesAnimation.spriteListIdx == 0:
+                self.kill()
+        elif self.jumpingAnimation.is_animating:
+            self.image = self.jumpingAnimation.getNextImage()
+        else:
+            #assign a new image
+            self.image = self.walkingAnimation.getNextImage()
+            
         #Calculate the distance between our "player" rectangle
         #and our "NPC" rectangle. We calculate the distance separately
         #in x and y by subtracting the centerx and centery attributes
         #of the two rectangles
 
         #distance between player and NPC in x
-        dx = self.player.rect.centerx - self.rect.centerx 
+            dx = self.player.rect.centerx - (self.rect.centerx + self.xoffset) 
         #distance between player and NPC in y
-        dy = self.player.rect.centery - self.rect.centery 
+            dy = self.player.rect.centery - (self.rect.centery + self.yoffset)
         #the total distance (pythagorean theorem) we will use
         #this to scale or normalize, dx and dy in a range between -1. and 1
-        distance = math.sqrt(dx**2 + dy**2)
+            distance = math.sqrt(dx**2 + dy**2)
         #if the player character is jumping use the opposite direction to
         #make the NPC move away from the player
-        if player.jumpingAnimation.is_animating:
-            distance = -distance
+            if player.jumpingAnimation.is_animating:
+                distance = -distance
+
+            if abs(distance) < 115:
+                self.jumpingAnimation.animate()
 
         #Move the NPC towards or away from the player
         #must check for absolute value of the distance for
@@ -158,21 +195,23 @@ class NPC(Player):
         #of our NPC rect by -6 to 6 pixels, based on the default
         #value of the speed being 2 and the random change for every
         #one out of ten updates of the speed between 1 and 6 (below)
-        if abs(distance) > 0:
-            dx_normalized = dx / distance
-            dy_normalized = dy / distance
+            if abs(distance) > 0:
+                dx_normalized = dx / distance
+                dy_normalized = dy / distance
             #we could also use our moveX and moveY methods
             #from our Player class. Can you tell if there is a 
             #difference between the below and using
             #self.moveX(self.speed * dx_normalized)
             #self.moveY(self.speed * dy_normalized)    
-            self.rect.centerx += self.speed * dx_normalized
-            self.rect.centery += self.speed * dy_normalized
+                self.rect.centerx += self.speed * dx_normalized
+                self.rect.centery += self.speed * dy_normalized
            
         #for every one out ten updates randomly change
         #the speed between 1 and 6
-        if random.random() < 0.1:
-            self.speed = random.randint(1,6)
+            if random.random() < 0.1:
+                self.speed = random.randint(1,6)
+                self.xoffset = random.randint(-75,75)
+                self.yoffset = random.randint(-75,75)
 
 
 #initializes the pygame environment
@@ -193,9 +232,8 @@ pygame.display.set_caption("Sprite Animation")
 #pygame.sprite.Group() is a class that manages updating
 #and drawing sprites to a screen. 
 player_group = pygame.sprite.Group()
-shot_group = pygame.sprite.Group()
+shots_group = pygame.sprite.Group()
 npc_group = pygame.sprite.Group()
-
 #add one instance of our Player class, colored RED 
 #add two instances of our NPC class, colored GREEN
 player = Player(0,100,pygame.Color(255,0,0)) #RED
@@ -205,7 +243,6 @@ npcTwo = NPC(0,300,pygame.Color("green"),player) #GREEN
 #add the sprites to the sprite group
 player_group.add(player)
 npc_group.add([npcOne,npcTwo])
-
 
 #the main drawing and event loop of a pygame application
 while True:
@@ -227,17 +264,16 @@ while True:
         #this causes one full animation through our list
         #of images per detection of the 'j' event
         player.jumpingAnimation.animate()
-
+  
     shootLeft = keystate[pygame.K_k]
     if shootLeft != 0:
         shot = Shot(player.rect.centerx,player.rect.centery,True)
-        shot_group.add(shot)
-
+        shots_group.add(shot)
+       
     shootRight = keystate[pygame.K_l]
     if shootRight != 0:
         shot = Shot(player.rect.centerx,player.rect.centery,False)
-        shot_group.add(shot)
-  
+        shots_group.add(shot)
     #If the left,right (diretionX) or up,down (directionY) keys
     #have been pressed then call the walkingAnimation.animate()
     #method foreach player. Replace the four comments below
@@ -252,6 +288,9 @@ while True:
         player.walkingAnimation.animate()
         player.moveY(directionY)
       
+    if random.random() < 0.005:
+        npc = NPC(0,0,pygame.Color("green"),player)
+        npc_group.add(npc)
     #color fill the screen with black,
     #notice this is a tuple
     screen.fill((0,0,0))
@@ -259,14 +298,21 @@ while True:
     #call our update function
     player_group.update()
     npc_group.update()
-    shot_group.update()
+    shots_group.update()
 
-    for npc in pygame.sprite.groupcollide(npc_group, shot_group, 0, 1).keys():
+    for npc in pygame.sprite.groupcollide(npc_group, shots_group, 0, 1).keys():
         npc.diesAnimation.animate()
+
+    for npc in pygame.sprite.spritecollide(player, npc_group, 0):
+        player.health -= 1
+        if player.health <= 0:
+            player.diesAnimation.animate()
+
+
     #draw our sprites to our screen
     player_group.draw(screen)
     npc_group.draw(screen)
-    shot_group.draw(screen)
+    shots_group.draw(screen)
     
     #call pygame.display.flip() which renders a whole screen
     #for this frame
